@@ -1,5 +1,5 @@
 /* eslint-disable no-unreachable */
-import appMain from './specialized/azurLaneDefinition'
+import appMain from './specialized/mainIndex'
 import autoMake from './autoMake'
 import { ModelConfig, parseModelConfig } from './modelConfig'
 
