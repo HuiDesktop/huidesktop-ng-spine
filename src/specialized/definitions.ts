@@ -30,4 +30,4 @@ export enum MouseKeyFunction {
 
 export const animations = ['Interact', 'Move', 'Relax', 'Sit', 'Sleep']
 
-export const premultiplied = false
+export const premultiplied = true
