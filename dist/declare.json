@@ -1,0 +1,14 @@
+{
+	"Id": "7CCFE25D-9FCD-40F3-BA2B-99FF582E78E9",
+	"Name": "cc.huix.azurlane:1",
+	"Features": [],
+	"Launch": [
+		{"Url": "https://huidesktop/module/7CCFE25D-9FCD-40F3-BA2B-99FF582E78E9/index.html", "Name": "从碧蓝航线模块启动"}
+	],
+	"Setup": [
+		{"Url": "https://huidesktop/module/7CCFE25D-9FCD-40F3-BA2B-99FF582E78E9/setup.html", "Name": "为碧蓝航线模块配置"}
+	],
+	"Suggestions": [
+		{"Name": "cc.huix.hook.keyboard", "Message": "启用键盘Hook后可以设置按下特定键后小人跳跃"}
+	]
+}
