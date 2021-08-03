@@ -3,19 +3,29 @@ export const motions = {
   drag: 'drag',
   drop: 'drop',
   chuo: 'chuo',
-  walk: 'walk'
+  walk: 'walk',
+  jump: 'jump'
 }
 
-export interface ExtraState {
-  dancing: boolean
-  facingLeft: boolean
+export const idleStateCount = 3
+export enum IdleState { stand, sit, sleep }
+
+export interface ExtraState { status: IdleState, facingLeft: boolean }
+
+export const getAnimationNameByIdleState = (s: IdleState): string => {
+  switch (s) {
+    case IdleState.stand: return 'Relax'
+    case IdleState.sit: return 'Sit'
+    case IdleState.sleep: return 'Sleep'
+    default: throw new Error()
+  }
 }
 
 export enum MouseKeyFunction {
   void,
   touch,
-  switchDance,
+  switchStatus,
   walk
 }
 
-export const animations = ['stand2', 'walk', 'touch', 'tuozhuai2', 'wash']
+export const animations = ['Interact', 'Move', 'Relax', 'Sit', 'Sleep']

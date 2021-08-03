@@ -7,7 +7,7 @@ import HuiDesktopIpcBridge from '../huiDesktopIpcBridge'
 import { ManageSpine } from '../pixiHelper'
 import ProcessManagementContainer from '../processManagementContainer'
 import { UserSettings } from './userSettings'
-import { ExtraState, motions, MouseKeyFunction } from './definitions'
+import { ExtraState, idleStateCount, motions, MouseKeyFunction } from './definitions'
 
 export function bindEventCallback (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettings, extraState: ExtraState): void {
   const chuo = (): void => {
@@ -15,10 +15,9 @@ export function bindEventCallback (hui: HuiDesktopIpcBridge, container: ProcessM
     container.enter(motions.chuo)
   }
 
-  const switchDance = (): void => {
-    if (container.current !== motions.idle) { return }
-    extraState.dancing = !extraState.dancing
-    container.enter(motions.idle)
+  const switchStatus = (): void => {
+    extraState.status = (extraState.status + 1) % idleStateCount
+    if (container.current === motions.idle) container.enter(motions.idle)
   }
 
   const walk = (): void => {
@@ -30,7 +29,7 @@ export function bindEventCallback (hui: HuiDesktopIpcBridge, container: ProcessM
   const makeClickFunc = (func: MouseKeyFunction): (() => void) => {
     switch (func) {
       case MouseKeyFunction.touch: return chuo
-      case MouseKeyFunction.switchDance: return switchDance
+      case MouseKeyFunction.switchStatus: return switchStatus
       case MouseKeyFunction.walk: return walk
       default: return (): void => { }
     }

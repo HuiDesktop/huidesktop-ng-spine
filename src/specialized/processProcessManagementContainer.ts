@@ -6,26 +6,44 @@
 import { ManageSpine } from '../pixiHelper'
 import ProcessManagementContainer from '../processManagementContainer'
 import { userSettingManager, UserSettings } from './userSettings'
-import { ExtraState, motions } from './definitions'
+import { ExtraState, getAnimationNameByIdleState, motions } from './definitions'
 import { Tween } from '@tweenjs/tween.js'
 import { getGround, getWalkSuggestions } from '../helpers'
 import { ModelConfig } from '../modelConfig'
-import HuiDesktopIpcBridge from '../huiDesktopIpcBridge'
+import HuiDesktopIpcBridge, { PosListener } from '../huiDesktopIpcBridge'
 
 export const newTweenToGround = (hui: HuiDesktopIpcBridge, target: number): Tween<any> => {
   return new Tween(hui.posListener).to({ y: target }, 0.666 * Math.abs(target - hui.pos.y))
 }
 
-export default function processProcessManagementContainer (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettings, modelConfig: ModelConfig, extraState: ExtraState, savePos: () => void): void {
-  character.whenComplete('touch', () => container.enter(motions.idle))
+export const newTweenUp = (hui: HuiDesktopIpcBridge): Tween<PosListener> => {
+  return new Tween(hui.posListener).to({ y: hui.pos.y - 100 }, 100)
+}
 
-  container.addEntry(motions.idle, () => character.loop(extraState.dancing ? 'dance' : 'stand2'))
-  container.addEntry(motions.chuo, () => character.once('touch'))
-  container.addEntry(motions.drag, () => character.loop('tuozhuai2'))
+export default function processProcessManagementContainer (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettings, modelConfig: ModelConfig, extraState: ExtraState, savePos: () => void): void {
+  character.whenComplete('Interact', () => container.enter(motions.idle))
+
+  container.addEntry(motions.idle, () => character.loop(getAnimationNameByIdleState(extraState.status)))
+  container.addEntry(motions.chuo, () => character.once('Interact'))
+  container.addEntry(motions.drag, () => character.loop('Relax'))
+
+  container.addEntry(motions.jump, setLeave => {
+    if (userSettings.free) { container.enter(motions.idle); return }
+
+    let devAtom = true // DEV
+    const finish = (): void => {
+      if (!devAtom) console.error()
+      devAtom = false
+      container.enter(motions.drop)
+      savePos()
+    }
+    const tween = newTweenUp(hui).onStop(finish).onComplete(finish).start()
+    setLeave(() => tween.stop())
+  })
 
   container.addEntry(motions.drop, setLeave => {
     if (userSettings.free) { savePos(); container.enter(motions.idle); return }
-    if (container.current !== motions.drag) { console.error('Unexpected current motion'); character.loop('tuozhuai2') }
+    if (container.current !== motions.drag) { console.error('Unexpected current motion') }
 
     let devAtom = true // DEV
     const finish = (): void => {
@@ -43,7 +61,7 @@ export default function processProcessManagementContainer (hui: HuiDesktopIpcBri
     const suggestion = getWalkSuggestions(hui, extraState.facingLeft, userSettings.scale, modelConfig.width)
     if (suggestion === null) { console.warn('Cannot walk'); return }
     if (suggestion.needFlip) { character.flip(); extraState.facingLeft = !extraState.facingLeft; userSettings.flip = true; userSettingManager.saveUserSettingsToLocalStorage(userSettings) }
-    character.loop('walk')
+    character.loop('Move')
     suggestion.tween.start().onComplete(() => { container.enter(motions.idle); savePos() })
     leave(() => { suggestion.tween.stop(); savePos() })
   })
