@@ -3,12 +3,13 @@
 import 'pixi.js'
 import 'pixi-spine'
 import { ModelConfig } from './modelConfig'
-import { animations } from './specialized/definitions'
+import { animations, premultiplied } from './specialized/definitions'
+import premultipliedImageLoader from './premultipliedImageLoader'
 
 type LoaderReturnType = Partial<Record<string, PIXI.LoaderResource>>
 
 async function loadCharacter (app: PIXI.Application, characterName: string, path: string): Promise<PIXI.spine.Spine> {
-  const loader = app.loader.add(characterName, path)
+  const loader = app.loader.add(characterName, path, premultiplied ? { metadata: { imageLoader: premultipliedImageLoader } } : undefined)
   const resources = await new Promise<LoaderReturnType>(resolve => loader.load((_, x) => resolve(x)))
   const characterResources = resources[characterName]
   if (characterResources === undefined) throw new Error('Cannot load character data')
