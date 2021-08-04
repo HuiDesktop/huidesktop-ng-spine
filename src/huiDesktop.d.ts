@@ -1,49 +1,22 @@
 /* eslint-disable accessor-pairs */
 // API Version = 1
-
-declare class BasicWindow {
-  get left (): number;
-  set left (value: number);
-  get top (): number;
-  set top (value: number);
-  set width (value: number);
-  set height (value: number);
+declare const _huiDesktopIpcBridge: {
+  getScreenInfo: () => Promise<{
+    avaliHeight: number
+    avaliWidth: number
+    avaliX: number
+    avaliY: number
+    height: number
+    width: number
+  }>
+  getWindowPosition: () => Promise<{ X: number, Y: number }>
+  getWindowSize: () => Promise<{ height: number, width: number }>
+  registerDragMoveListener: (cb: (type: number, status: number) => void) => Promise<void>
+  registerWindowPositionListener: (cb: (x: number, y: number) => void) => Promise<void>
+  setBooleanAttribute: (name: string, value: boolean) => Promise<void>
+  setWindowPosition: (x: number, y: number) => Promise<void>
+  setWindowSize: (width: number, height: number) => Promise<void>
+  registerSetting: (cb: () => void) => Promise<void>
 }
 
-declare class WorkingArea {
-  get left (): number;
-  get top (): number;
-  get width (): number;
-  get height (): number;
-}
-
-declare class BasicScreen {
-  get width (): number;
-  get height (): number;
-}
-
-declare class HuiDesktop {
-  get apiVersion (): number;
-
-  get window (): BasicWindow;
-  get workingArea (): WorkingArea;
-  get screen (): BasicScreen;
-
-  set topMost (value: boolean);
-  set dragMoveLeft (value: boolean);
-  set dragMoveRight (value: boolean);
-  set showInTaskbar (value: boolean);
-  set clickTransparent (value: boolean);
-}
-
-declare interface Window {
-  huiDesktop_DragMove_OnMouseRightClick: () => void
-  huiDesktop_DragMove_OnMouseLeftClick: () => void
-  huiDesktop_DragMove_OnMouseRightDown: () => void
-  huiDesktop_DragMove_OnMouseLeftDown: () => void
-  huiDesktop_DragMove_OnMouseLeftUp: () => void
-  huiDesktop_DragMove_OnMouseRightUp: () => void
-  requestSettings: () => void
-}
-
-declare let huiDesktop: HuiDesktop
+declare const cefSharp: { bindObjectAsync: (name: string) => Promise<{ Message: string }> }
