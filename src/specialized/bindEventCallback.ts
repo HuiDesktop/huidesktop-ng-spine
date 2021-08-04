@@ -39,10 +39,7 @@ export function bindEventCallback (hui: HuiDesktopIpcBridge, container: ProcessM
   const leftClick = makeClickFunc(userSettings.left)
   const rightClick = makeClickFunc(userSettings.right)
 
-  character.on('mousedown', leftClick)
-  character.on('rightdown', rightClick)
-
-  character.raw.addListener('leftclick', leftClick)
+  character.raw.addListener('leftclick', () => leftClick())
   hui.dragMoveEvent.addEventListener('leftclick', () => leftClick())
   hui.dragMoveEvent.addEventListener('leftdown', () => container.enter(motions.drag))
   hui.dragMoveEvent.addEventListener('leftup', () => container.enter(motions.drop))
