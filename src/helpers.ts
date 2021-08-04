@@ -2,7 +2,7 @@ import { ModelConfig } from './modelConfig'
 import { Tween } from '@tweenjs/tween.js'
 import HuiDesktopIpcBridge, { PosListener } from './huiDesktopIpcBridge'
 
-export const getGround = (mc: ModelConfig, scale: number): number => huiDesktop.workingArea.height - ((mc.height - mc.y0) * scale)
+export const getGround = (hui: HuiDesktopIpcBridge, mc: ModelConfig, scale: number): number => hui.workingAreaY + hui.workingAreaHeight - ((mc.height - mc.y0) * scale)
 
 export interface WalkSuggestion {
   needFlip: boolean
@@ -11,7 +11,7 @@ export interface WalkSuggestion {
 
 export const getWalkSuggestions = (hui: HuiDesktopIpcBridge, facingLeft: boolean, scale: number, noScaleWidth: number, noScaleLen = 200, looped = false): WalkSuggestion | null => {
   const current = hui.pos.x
-  const maxlen = huiDesktop.workingArea.width
+  const maxlen = hui.workingAreaWidth
   const len = Math.floor(facingLeft ? current : (maxlen - current - scale * noScaleWidth))
   const maxRound = len / (noScaleLen * scale)
   if (maxRound < 1) {

@@ -18,8 +18,8 @@ const getWindowPosFromLocalStorage = (name: string): { x: number, y: number, suc
   }
 }
 
-const saveWindowPosToLocalStorage = (_huiDesktop: HuiDesktopIpcBridge, name: string): void => {
-  localStorage.setItem(name, JSON.stringify(/* huiDesktop.pos TODO */{ x: huiDesktop.window.left, y: huiDesktop.window.top }))
+const saveWindowPosToLocalStorage = (hui: HuiDesktopIpcBridge, name: string): void => {
+  localStorage.setItem(name, JSON.stringify(/* huiDesktop.pos TODO */{ x: hui.pos.x, y: hui.pos.y }))
 }
 
 interface initializeWindowResult {
@@ -27,20 +27,20 @@ interface initializeWindowResult {
   savePos: () => void
 }
 
-export const initializeWindow = (huiDesktop: HuiDesktopIpcBridge, modelConfig: ModelConfig, userSettings: UserSettingBase<number>, mayFlip: boolean): initializeWindowResult => {
+export const initializeWindow = (hui: HuiDesktopIpcBridge, modelConfig: ModelConfig, userSettings: UserSettingBase<number>, mayFlip: boolean): initializeWindowResult => {
   // 调整坐标
   const name = `cc.huix.blhx.${modelConfig.name}.pos`
   const { x, y, success } = getWindowPosFromLocalStorage(name)
-  const ground = getGround(modelConfig, userSettings.scale)
-  if (success) { huiDesktop.pos.x = x; huiDesktop.pos.y = y } else { huiDesktop.pos.x = 0; huiDesktop.pos.y = ground }
-  if (!userSettings.free) huiDesktop.posListener.y = ground
+  const ground = getGround(hui, modelConfig, userSettings.scale)
+  if (success) { hui.pos.x = x; hui.pos.y = y } else { hui.pos.x = 0; hui.pos.y = ground }
+  if (!userSettings.free) hui.posListener.y = ground
 
   // 调整大小
   const { width, height } = getRectSize(modelConfig, userSettings.scale, mayFlip)
-  huiDesktop.setWindowSize(width, height)
+  hui.setWindowSize(width, height).catch(e => console.error(e))
 
   return {
     size: { width, height },
-    savePos: () => saveWindowPosToLocalStorage(huiDesktop, name)
+    savePos: () => saveWindowPosToLocalStorage(hui, name)
   }
 }

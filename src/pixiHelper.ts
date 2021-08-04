@@ -1,4 +1,6 @@
 import { spine } from 'pixi.js'
+import premultipliedImageLoader from './premultipliedImageLoader'
+import { premultiplied } from './specialized/definitions'
 
 export class ManageSpine {
   public readonly raw: spine.Spine
@@ -11,7 +13,7 @@ export class ManageSpine {
 
   public static async downloadFromSkelUrl (url: string): Promise<ManageSpine> {
     const loader = new PIXI.Loader()
-    loader.add(url, url)
+    loader.add(url, url, premultiplied ? { metadata: { imageLoader: premultipliedImageLoader } } : undefined)
     const resources = await new Promise<Partial<Record<string, PIXI.LoaderResource>>>(resolve => loader.load((_, x) => resolve(x)))
     const characterResources = resources[url]
     if (characterResources === undefined) throw new Error('Cannot read resources')
@@ -42,8 +44,8 @@ export class ManageSpine {
   }
 
   public setScale (scale: number, flip = false): void {
-    this.raw.skeleton.scaleX = scale * (flip ? -1 : 1)
-    this.raw.skeleton.scaleY = scale
+    this.raw.scale.x = scale * (flip ? -1 : 1)
+    this.raw.scale.y = scale
   }
 
   public flip (): void {
