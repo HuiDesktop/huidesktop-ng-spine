@@ -7,9 +7,9 @@ import { initializeWindow } from './shapeHelper'
 import UserSettingManagerBase, { UserSettingBase } from './userSettingBase'
 
 const applyPureUserSettings = (hui: HuiDesktopIpcBridge, userSettings: UserSettingBase<number>): void => {
-  hui.setTopMost(userSettings.topMost)
-  hui.hideTaskbarIcon(userSettings.hideTaskbarIcon)
-  hui.setClickTransparent(userSettings.clickTransparent)
+  hui.setTopMost(userSettings.topMost).catch(e => console.error(e))
+  hui.hideTaskbarIcon(userSettings.hideTaskbarIcon).catch(e => console.error(e))
+  hui.setClickTransparent(userSettings.clickTransparent).catch(e => console.error(e))
 }
 
 const initializeApp = (app: ManagedApplication, modelConfig: ModelConfig, userSettings: UserSettingBase<number>): void => {
@@ -41,7 +41,7 @@ export default function<MouseKeyFunction extends number, ExtraState> (
 ) {
   return async (modelConfig: ModelConfig): Promise<void> => {
     userSettingManager.keyName = keyNameBuilder(modelConfig.name)
-    const hui = new HuiDesktopIpcBridge()
+    const hui = await HuiDesktopIpcBridge.getInstance()
     const userSettings = userSettingManager.loadUserSettingsFromLocalStorage()
     const container = new ProcessManagementContainer()
     const extraState = extraStateBuilder(userSettings)
@@ -54,6 +54,7 @@ export default function<MouseKeyFunction extends number, ExtraState> (
 
     const character = await ManageSpine.downloadFromSkelUrl(modelConfig.location)
     initializeCharacter(character, modelConfig, userSettings)
+    character.raw.interactive = true
     processProcessManagementContainer(hui, container, character, userSettings, modelConfig, extraState, savePos)
     bindEventCallback(hui, container, character, userSettings, extraState)
     app.add(character)
@@ -80,6 +81,6 @@ export default function<MouseKeyFunction extends number, ExtraState> (
 
     window.saveSettings = d => userSettingManager.saveUserSettingsToLocalStorage(userSettingManager.getUserSettingsFromHTMLDocument(d))
     window.showSettings = d => userSettingManager.showUserSettingsToHTMLDocument(userSettings, d)
-    hui.setUserSettingsResponse(() => window.open('config.html', '设置', 'width=370, height=760'))
+    hui.setUserSettingsResponse(() => window.open('config.html', '设置', 'width=370, height=760')).catch(e => console.error(e))
   }
 }

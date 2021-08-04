@@ -9,7 +9,7 @@ export default function imageLoaderAdapter (loader: any, namePrefix: string, bas
     const cachedResource = loader.resources[name]
     if (typeof cachedResource === 'object') {
       const done = (): void => {
-        cachedResource.texture.baseTexture.alphaMode = 2 /* !! PIXI.ALPHA_MODES.PREMULTIPLY_ALPHA */
+        cachedResource.texture.baseTexture.alphaMode = PIXI.ALPHA_MODES.PREMULTIPLIED_ALPHA /* !! PIXI.ALPHA_MODES.PREMULTIPLY_ALPHA */
         callback(cachedResource.texture.baseTexture)
       }
       if (typeof cachedResource.texture === 'object') {
