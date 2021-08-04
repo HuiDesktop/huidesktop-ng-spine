@@ -42,13 +42,15 @@ export function bindEventCallback (hui: HuiDesktopIpcBridge, container: ProcessM
   character.on('mousedown', leftClick)
   character.on('rightdown', rightClick)
 
-  hui.onLeftClick(leftClick)
-  hui.onLeftDown(() => container.enter(motions.drag))
-  hui.onLeftUp(() => container.enter(motions.drop))
-  hui.setLeftDrag(userSettings.leftDrag)
+  character.raw.addListener('leftclick', leftClick)
+  hui.dragMoveEvent.addEventListener('leftclick', () => leftClick())
+  hui.dragMoveEvent.addEventListener('leftdown', () => container.enter(motions.drag))
+  hui.dragMoveEvent.addEventListener('leftup', () => container.enter(motions.drop))
+  hui.setLeftDrag(userSettings.leftDrag).catch(e => console.error(e))
 
-  hui.onRightClick(rightClick)
-  hui.onRightDown(() => container.enter(motions.drag))
-  hui.onRightUp(() => container.enter(motions.drop))
-  hui.setRightDrag(userSettings.rightDrag)
+  character.raw.addListener('rightclick', leftClick)
+  hui.dragMoveEvent.addEventListener('rightclick', () => rightClick())
+  hui.dragMoveEvent.addEventListener('rightdown', () => container.enter(motions.drag))
+  hui.dragMoveEvent.addEventListener('rightup', () => container.enter(motions.drop))
+  hui.setRightDrag(userSettings.rightDrag).catch(e => console.error(e))
 }
