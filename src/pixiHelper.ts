@@ -44,8 +44,8 @@ export class ManageSpine {
   }
 
   public setScale (scale: number, flip = false): void {
-    this.raw.skeleton.scaleX = scale * (flip ? -1 : 1)
-    this.raw.skeleton.scaleY = scale
+    this.raw.scale.x = scale * (flip ? -1 : 1)
+    this.raw.scale.y = scale
   }
 
   public flip (): void {
