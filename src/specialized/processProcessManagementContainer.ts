@@ -53,7 +53,7 @@ export default function processProcessManagementContainer (hui: HuiDesktopIpcBri
       savePos()
     }
 
-    const tween = newTweenToGround(hui, getGround(modelConfig, userSettings.scale)).onStop(finish).onComplete(finish).start()
+    const tween = newTweenToGround(hui, getGround(hui, modelConfig, userSettings.scale)).onStop(finish).onComplete(finish).start()
     setLeave(() => tween.stop())
   })
 
