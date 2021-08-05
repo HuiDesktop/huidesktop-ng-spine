@@ -64,3 +64,14 @@ async function startDownload (): Promise<void> {
 
 tryButton.onclick = finishinput
 goButton.onclick = startDownload
+
+fetch('/sandbox/modelName.txt').then(r => {
+  if (r.ok) {
+    return r.text()
+  } else return null
+}).then(v => {
+  if (typeof v === 'string') {
+    modelNameInput.value = v
+    return finishinput()
+  }
+}).catch(e => console.error(e))

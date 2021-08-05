@@ -8,6 +8,7 @@ import { ManageSpine } from '../pixiHelper'
 import ProcessManagementContainer from '../processManagementContainer'
 import { UserSettings } from './userSettings'
 import { ExtraState, motions, MouseKeyFunction } from './definitions'
+import { InteractionEvent } from 'pixi.js'
 
 export function bindEventCallback (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettings, extraState: ExtraState): void {
   const chuo = (): void => {
@@ -39,13 +40,17 @@ export function bindEventCallback (hui: HuiDesktopIpcBridge, container: ProcessM
   const leftClick = makeClickFunc(userSettings.left)
   const rightClick = makeClickFunc(userSettings.right)
 
-  character.raw.addListener('leftclick', () => leftClick())
+  character.raw.addListener('click', (ev: InteractionEvent) => {
+    if (ev.data.button === 0) {
+      leftClick()
+    }
+  })
   hui.dragMoveEvent.addEventListener('leftclick', () => leftClick())
   hui.dragMoveEvent.addEventListener('leftdown', () => container.enter(motions.drag))
   hui.dragMoveEvent.addEventListener('leftup', () => container.enter(motions.drop))
   hui.setLeftDrag(userSettings.leftDrag).catch(e => console.error(e))
 
-  character.raw.addListener('rightclick', leftClick)
+  character.raw.addListener('rightclick', rightClick)
   hui.dragMoveEvent.addEventListener('rightclick', () => rightClick())
   hui.dragMoveEvent.addEventListener('rightdown', () => container.enter(motions.drag))
   hui.dragMoveEvent.addEventListener('rightup', () => container.enter(motions.drop))
