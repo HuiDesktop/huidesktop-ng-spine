@@ -43,7 +43,7 @@ export default async function processProcessManagementContainer (hui: HuiDesktop
 
   container.addEntry(motions.drop, setLeave => {
     if (userSettings.free) { savePos(); container.enter(motions.idle); return }
-    if (container.current !== motions.drag) { console.error('Unexpected current motion') }
+    if (container.current !== motions.drag && container.current !== motions.jump) { console.error('Unexpected current motion') }
 
     let devAtom = true // DEV
     const finish = (): void => {
