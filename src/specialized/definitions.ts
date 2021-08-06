@@ -18,6 +18,6 @@ export enum MouseKeyFunction {
   walk
 }
 
-export const animations = ['stand2', 'walk', 'touch', 'tuozhuai2', 'wash']
+export const animations = ['stand2', 'walk', 'touch', 'tuozhuai2']
 
 export const premultiplied = false
