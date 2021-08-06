@@ -20,7 +20,7 @@ export const newTweenUp = (hui: HuiDesktopIpcBridge): Tween<PosListener> => {
   return new Tween(hui.posListener).to({ y: hui.pos.y - 100 }, 100)
 }
 
-export default function processProcessManagementContainer (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettings, modelConfig: ModelConfig, extraState: ExtraState, savePos: () => void): void {
+export default async function processProcessManagementContainer (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettings, modelConfig: ModelConfig, extraState: ExtraState, savePos: () => void): Promise<void> {
   character.whenComplete('Interact', () => container.enter(motions.idle))
 
   container.addEntry(motions.idle, () => character.loop(getAnimationNameByIdleState(extraState.status)))
@@ -65,4 +65,14 @@ export default function processProcessManagementContainer (hui: HuiDesktopIpcBri
     suggestion.tween.start().onComplete(() => { container.enter(motions.idle); savePos() })
     leave(() => { suggestion.tween.stop(); savePos() })
   })
+
+  cefSharp.bindObjectAsync('_huiDesktopKeyboardSpacePlay').then(s => {
+    if (s.Success) {
+      return _huiDesktopKeyboardSpacePlay.get((t, _k) => {
+        if (t === 0 && container.current === motions.idle) {
+          container.enter(motions.jump)
+        }
+      })
+    }
+  }).catch(e => console.error(e))
 }
