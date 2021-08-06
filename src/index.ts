@@ -3,6 +3,7 @@ import appMain from './specialized/mainIndex'
 import autoMake from './autoMake'
 import { ModelConfig, parseModelConfig } from './modelConfig'
 import HuiDesktopIpcBridge from './huiDesktopIpcBridge'
+import { getOpeningWindowSizeStr } from './shapeHelper'
 
 const enterMain = (conf: ModelConfig): void => {
   appMain(conf).catch(e => console.error(e))
@@ -28,7 +29,7 @@ fetch('/sandbox/model_config.json')
       document.body.style.backgroundColor = 'white';
       (await HuiDesktopIpcBridge.getInstance()).setWindowSize(180, 120).catch(e => console.error(e))
       window.onDownloadModelSuccess = () => location.reload()
-      window.open('setup.html', '模型下载器', 'width=400, height=400')
+      window.open('setup.html', '模型下载器', getOpeningWindowSizeStr(400, 400))
     }
   })
   .catch(async e => {
