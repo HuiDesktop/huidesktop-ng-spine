@@ -73,7 +73,6 @@ export default class HuiDesktopIpcBridge {
     const info = await _huiDesktopIpcBridge.getScreenInfo()
     HuiDesktopIpcBridge.instance = new HuiDesktopIpcBridge(pos.X, pos.Y, size.width, size.height, info.width, info.height, info.avaliWidth, info.avaliHeight, info.avaliX, info.avaliY)
     await _huiDesktopIpcBridge.registerWindowPositionListener((x, y) => {
-      console.log(x, y)
       this.instance._pos.x = x; this.instance._pos.y = y
     })
     await _huiDesktopIpcBridge.registerDragMoveListener((type, status) => {
