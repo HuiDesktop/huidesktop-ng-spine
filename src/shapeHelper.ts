@@ -37,10 +37,14 @@ export const initializeWindow = (hui: HuiDesktopIpcBridge, modelConfig: ModelCon
 
   // 调整大小
   const { width, height } = getRectSize(modelConfig, userSettings.scale, mayFlip)
-  hui.setWindowSize(width, height).catch(e => console.error(e))
+  hui.setWindowSize(width + 1, height + 1).catch(e => console.error(e))
 
   return {
     size: { width, height },
     savePos: () => saveWindowPosToLocalStorage(hui, name)
   }
+}
+
+export const getOpeningWindowSizeStr = (width: number, height: number): string => {
+  return `width=${width * devicePixelRatio}, height=${height * devicePixelRatio}`
 }
