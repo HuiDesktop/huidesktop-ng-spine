@@ -3,7 +3,8 @@ export const motions = {
   drag: 'drag',
   drop: 'drop',
   chuo: 'chuo',
-  walk: 'walk'
+  walk: 'walk',
+  jump: 'jump'
 }
 
 export interface ExtraState {
