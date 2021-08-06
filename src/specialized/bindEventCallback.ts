@@ -6,11 +6,11 @@
 import HuiDesktopIpcBridge from '../huiDesktopIpcBridge'
 import { ManageSpine } from '../pixiHelper'
 import ProcessManagementContainer from '../processManagementContainer'
-import { UserSettings } from './userSettings'
+import { saveIdleState, UserSettings } from './userSettings'
 import { ExtraState, idleStateCount, motions, MouseKeyFunction } from './definitions'
 import { InteractionEvent } from 'pixi.js'
 
-export function bindEventCallback (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettings, extraState: ExtraState): void {
+export function bindEventCallback (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettings, extraState: ExtraState, name: string): void {
   const chuo = (): void => {
     if (container.current !== motions.idle) { return }
     container.enter(motions.chuo)
@@ -18,6 +18,7 @@ export function bindEventCallback (hui: HuiDesktopIpcBridge, container: ProcessM
 
   const switchStatus = (): void => {
     extraState.status = (extraState.status + 1) % idleStateCount
+    saveIdleState(name, extraState.status)
     if (container.current === motions.idle) container.enter(motions.idle)
   }
 

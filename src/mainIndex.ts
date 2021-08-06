@@ -31,10 +31,10 @@ const initializeCharacter = (character: ManageSpine, modelConfig: ModelConfig, u
 export default function<MouseKeyFunction extends number, ExtraState> (
   userSettingManager: UserSettingManagerBase<MouseKeyFunction>,
   keyNameBuilder: (name: string) => string, // `cc.huix.blhx.${modelConfig.name}`
-  extraStateBuilder: (userSettings: UserSettingBase<MouseKeyFunction>) => ExtraState, // { dancing: false, facingLeft: userSettings.flip }
+  extraStateBuilder: (name: string, userSettings: UserSettingBase<MouseKeyFunction>) => ExtraState, // { dancing: false, facingLeft: userSettings.flip }
   canFlipBuilder: (modelConfig: ModelConfig, userSettings: UserSettingBase<MouseKeyFunction>) => boolean, // userSettings.walkRandom > 0 || userSettings.left === MouseKeyFunction.walk || userSettings.right === MouseKeyFunction.walk
   processProcessManagementContainer: (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettingBase<MouseKeyFunction>, modelConfig: ModelConfig, extraState: ExtraState, savePos: () => void) => void,
-  bindEventCallback: (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettingBase<MouseKeyFunction>, extraState: ExtraState) => void,
+  bindEventCallback: (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettingBase<MouseKeyFunction>, extraState: ExtraState, name: string) => void,
   containerEntry: string,
   idleEntry: string,
   walkEntry: string
@@ -44,7 +44,7 @@ export default function<MouseKeyFunction extends number, ExtraState> (
     const hui = await HuiDesktopIpcBridge.getInstance()
     const userSettings = userSettingManager.loadUserSettingsFromLocalStorage()
     const container = new ProcessManagementContainer()
-    const extraState = extraStateBuilder(userSettings)
+    const extraState = extraStateBuilder(modelConfig.name, userSettings)
 
     applyPureUserSettings(hui, userSettings)
 
@@ -56,7 +56,7 @@ export default function<MouseKeyFunction extends number, ExtraState> (
     initializeCharacter(character, modelConfig, userSettings)
     character.raw.interactive = true
     processProcessManagementContainer(hui, container, character, userSettings, modelConfig, extraState, savePos)
-    bindEventCallback(hui, container, character, userSettings, extraState)
+    bindEventCallback(hui, container, character, userSettings, extraState, modelConfig.name)
     app.add(character)
 
     const loop = (time: number): void => {
