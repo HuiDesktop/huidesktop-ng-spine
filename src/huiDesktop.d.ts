@@ -19,4 +19,6 @@ declare const _huiDesktopIpcBridge: {
   registerSetting: (cb: () => void) => Promise<void>
 }
 
-declare const cefSharp: { bindObjectAsync: (name: string) => Promise<{ Message: string }> }
+declare const cefSharp: { bindObjectAsync: (name: string) => Promise<{ Message: string, Success: boolean, Count: number }> }
+
+declare const _huiDesktopKeyboardSpacePlay: { get: (cb: (type: number, key: number) => any) => Promise<void> }
