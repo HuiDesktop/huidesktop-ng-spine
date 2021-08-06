@@ -47,4 +47,15 @@ export default function processProcessManagementContainer (hui: HuiDesktopIpcBri
     suggestion.tween.start().onComplete(() => { container.enter(motions.idle); savePos() })
     leave(() => { suggestion.tween.stop(); savePos() })
   })
+
+  cefSharp.bindObjectAsync('_huiDesktopKeyboardSpacePlay').then(s => {
+    if (s.Success) {
+      return _huiDesktopKeyboardSpacePlay.get((t, _k) => {
+        if (t === 0 && container.current === motions.idle) {
+          // TODO
+          container.enter(motions.jump)
+        }
+      })
+    }
+  }).catch(e => console.error(e))
 }
