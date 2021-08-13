@@ -43,6 +43,10 @@ export function bindEventCallback ({ hui, container, character, userSettings, ex
 
   pluginEvents.leftClick.push(endpoint(makeClickFunc(userSettings.left)))
   pluginEvents.rightClick.push(endpoint(makeClickFunc(userSettings.right)))
+  pluginEvents.leftDragDown.push(endpoint(() => container.enter(motions.drag)))
+  pluginEvents.leftDragUp.push(endpoint(() => container.enter(motions.drop)))
+  pluginEvents.rightDragDown.push(endpoint(() => container.enter(motions.drag)))
+  pluginEvents.rightDragUp.push(endpoint(() => container.enter(motions.drop)))
 
   const leftClick = (): boolean => dispatchEvent(pluginEvents.leftClick, x => x())
   const rightClick = (): boolean => dispatchEvent(pluginEvents.rightClick, x => x())
@@ -53,13 +57,13 @@ export function bindEventCallback ({ hui, container, character, userSettings, ex
     }
   })
   hui.dragMoveEvent.addEventListener('leftclick', () => leftClick())
-  hui.dragMoveEvent.addEventListener('leftdown', () => container.enter(motions.drag))
-  hui.dragMoveEvent.addEventListener('leftup', () => container.enter(motions.drop))
+  hui.dragMoveEvent.addEventListener('leftdown', () => dispatchEvent(pluginEvents.leftDragDown, x => x()))
+  hui.dragMoveEvent.addEventListener('leftup', () => dispatchEvent(pluginEvents.leftDragUp, x => x()))
   hui.setLeftDrag(userSettings.leftDrag).catch(e => console.error(e))
 
   character.raw.addListener('rightclick', rightClick)
   hui.dragMoveEvent.addEventListener('rightclick', () => rightClick())
-  hui.dragMoveEvent.addEventListener('rightdown', () => container.enter(motions.drag))
-  hui.dragMoveEvent.addEventListener('rightup', () => container.enter(motions.drop))
+  hui.dragMoveEvent.addEventListener('rightdown', () => dispatchEvent(pluginEvents.rightDragDown, x => x()))
+  hui.dragMoveEvent.addEventListener('rightup', () => dispatchEvent(pluginEvents.rightDragUp, x => x()))
   hui.setRightDrag(userSettings.rightDrag).catch(e => console.error(e))
 }
