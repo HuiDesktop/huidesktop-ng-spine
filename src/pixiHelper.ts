@@ -28,15 +28,8 @@ export class ManageSpine {
     this.raw.state.setAnimation(0, name, false)
   }
 
-  public whenComplete (name: string, run: () => void, interrupt = true): void {
-    const next = this.onComplete
-    this.onComplete = entry => {
-      if (entry.animation.name === name) {
-        run()
-        if (interrupt) return
-      }
-      next(entry)
-    }
+  public onAnimationCompleted (fn: (name: string) => void): void {
+    this.onComplete = entry => fn(entry.animation.name)
   }
 
   public get on (): (event: string, fn: Function, context?: any) => void {

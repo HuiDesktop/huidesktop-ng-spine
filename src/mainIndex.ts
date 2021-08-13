@@ -1,4 +1,6 @@
 import TWEEN from '@tweenjs/tween.js'
+import { dispatchEvent } from './events'
+import HuiApplication from './huiApplication'
 import HuiDesktopIpcBridge from './huiDesktopIpcBridge'
 import { ModelConfig } from './modelConfig'
 import { ManagedApplication, ManageSpine } from './pixiHelper'
@@ -26,6 +28,7 @@ const initializeApp = (app: ManagedApplication, modelConfig: ModelConfig, userSe
 const initializeCharacter = (character: ManageSpine, modelConfig: ModelConfig, userSettings: UserSettingBase<number>): void => {
   character.raw.stateData.defaultMix = 1 / 6
   character.setScale(userSettings.scale, userSettings.flip)
+  character.raw.interactive = true
 }
 
 export default function<MouseKeyFunction extends number, ExtraState> (
@@ -33,8 +36,8 @@ export default function<MouseKeyFunction extends number, ExtraState> (
   keyNameBuilder: (name: string) => string, // `cc.huix.blhx.${modelConfig.name}`
   extraStateBuilder: (name: string, userSettings: UserSettingBase<MouseKeyFunction>) => ExtraState, // { dancing: false, facingLeft: userSettings.flip }
   canFlipBuilder: (modelConfig: ModelConfig, userSettings: UserSettingBase<MouseKeyFunction>) => boolean, // userSettings.walkRandom > 0 || userSettings.left === MouseKeyFunction.walk || userSettings.right === MouseKeyFunction.walk
-  processProcessManagementContainer: (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettingBase<MouseKeyFunction>, modelConfig: ModelConfig, extraState: ExtraState, savePos: () => void) => void,
-  bindEventCallback: (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettingBase<MouseKeyFunction>, extraState: ExtraState, name: string) => void,
+  processProcessManagementContainer: (happ: HuiApplication<MouseKeyFunction, ExtraState>) => Promise<void> | void,
+  bindEventCallback: (happ: HuiApplication<MouseKeyFunction, ExtraState>) => Promise<void> | void,
   containerEntry: string,
   idleEntry: string,
   walkEntry: string
@@ -54,10 +57,17 @@ export default function<MouseKeyFunction extends number, ExtraState> (
 
     const character = await ManageSpine.downloadFromSkelUrl(modelConfig.location)
     initializeCharacter(character, modelConfig, userSettings)
-    character.raw.interactive = true
-    processProcessManagementContainer(hui, container, character, userSettings, modelConfig, extraState, savePos)
-    bindEventCallback(hui, container, character, userSettings, extraState, modelConfig.name)
     app.add(character)
+
+    const happ = new HuiApplication<MouseKeyFunction, ExtraState>(hui, modelConfig.name, app, character, container, extraState, modelConfig, userSettings, userSettingManager, savePos)
+    character.onComplete = state => dispatchEvent(happ.pluginEvents.animationCompleted, h => h(state.animation.name))
+
+    {
+      const p1 = processProcessManagementContainer(happ)
+      if (p1 != null) await p1
+      const p2 = bindEventCallback(happ)
+      if (p2 != null) await p2
+    }
 
     const loop = (time: number): void => {
       TWEEN.update(time)
@@ -70,12 +80,13 @@ export default function<MouseKeyFunction extends number, ExtraState> (
     requestAnimationFrame(time => loop(time))
 
     if (userSettings.walkRandom > 0) {
-      setInterval(() => {
-        if (container.current === idleEntry && Math.random() < 1 / userSettings.walkRandom) {
-          container.enter(walkEntry)
-        }
-      }, 1000)
+      happ.pluginEvents.animationCompleted.push(_name => {
+        if (container.current === idleEntry && Math.random() < 1 / userSettings.walkRandom) container.enter(walkEntry)
+        return true
+      })
     }
+
+    window.huiapp = happ
 
     userSettingManager.saveUserSettingsToLocalStorage(userSettings)
 

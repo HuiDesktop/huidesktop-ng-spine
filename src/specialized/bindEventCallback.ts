@@ -3,14 +3,13 @@
  * 事件 --> 动画变换
  */
 
-import HuiDesktopIpcBridge from '../huiDesktopIpcBridge'
-import { ManageSpine } from '../pixiHelper'
-import ProcessManagementContainer from '../processManagementContainer'
-import { saveIdleState, UserSettings } from './userSettings'
+import { saveIdleState } from './userSettings'
 import { ExtraState, idleStateCount, motions, MouseKeyFunction } from './definitions'
 import { InteractionEvent } from 'pixi.js'
+import HuiApplication from '../huiApplication'
+import { dispatchEvent } from '../events'
 
-export function bindEventCallback (hui: HuiDesktopIpcBridge, container: ProcessManagementContainer, character: ManageSpine, userSettings: UserSettings, extraState: ExtraState, name: string): void {
+export function bindEventCallback ({ hui, container, character, userSettings, extraState, name, pluginEvents }: HuiApplication<MouseKeyFunction, ExtraState>): void {
   const chuo = (): void => {
     if (container.current !== motions.idle) { return }
     container.enter(motions.chuo)
@@ -37,8 +36,16 @@ export function bindEventCallback (hui: HuiDesktopIpcBridge, container: ProcessM
     }
   }
 
-  const leftClick = makeClickFunc(userSettings.left)
-  const rightClick = makeClickFunc(userSettings.right)
+  const endpoint = (t: () => void): (() => boolean) => () => {
+    t()
+    return true
+  }
+
+  pluginEvents.leftClick.push(endpoint(makeClickFunc(userSettings.left)))
+  pluginEvents.rightClick.push(endpoint(makeClickFunc(userSettings.right)))
+
+  const leftClick = (): boolean => dispatchEvent(pluginEvents.leftClick, x => x())
+  const rightClick = (): boolean => dispatchEvent(pluginEvents.rightClick, x => x())
 
   character.raw.addListener('click', (ev: InteractionEvent) => {
     if (ev.data.button === 0) {
