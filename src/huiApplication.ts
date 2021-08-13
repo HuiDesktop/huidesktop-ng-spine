@@ -5,8 +5,10 @@ import { ManagedApplication, ManageSpine } from './pixiHelper'
 import ProcessManagementContainer from './processManagementContainer'
 import UserSettingManagerBase, { UserSettingBase } from './userSettingBase'
 
+export const HUIAPP_VERSION = 1
+
 export default class <MouseKeyFunction extends number, ExtraState> {
-  readonly ver = 1
+  readonly ver = HUIAPP_VERSION
   hui: HuiDesktopIpcBridge
   name: string
   app: ManagedApplication

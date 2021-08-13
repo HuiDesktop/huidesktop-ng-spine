@@ -93,5 +93,10 @@ export default function<MouseKeyFunction extends number, ExtraState> (
     window.saveSettings = d => userSettingManager.saveUserSettingsToLocalStorage(userSettingManager.getUserSettingsFromHTMLDocument(d))
     window.showSettings = d => userSettingManager.showUserSettingsToHTMLDocument(userSettings, d)
     hui.setUserSettingsResponse(() => window.open('config.html', '设置', getOpeningWindowSizeStr(370, 760))).catch(e => console.error(e))
+
+    const pluginJs = document.createElement('script')
+    pluginJs.setAttribute('type', 'text/javascript')
+    pluginJs.setAttribute('src', '/sandbox/plugin.js')
+    document.body.insertBefore(pluginJs, document.body.lastChild)
   }
 }

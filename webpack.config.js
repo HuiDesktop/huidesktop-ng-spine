@@ -3,7 +3,7 @@ const path = require('path')
 const webpack = require('webpack')
 
 const conf = {
-  entry: { main: './src/index.ts', setup: './src/downloaderIndex.ts' },
+  entry: { main: './src/index.ts', setup: './src/downloaderIndex.ts', editor: './src/editorIndex.ts' },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist/Root')
@@ -13,6 +13,9 @@ const conf = {
       test: /\.ts$/,
       use: 'awesome-typescript-loader',
       exclude: /node_modules/
+    }, {
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader']
     }]
   },
   resolve: {

@@ -80,8 +80,9 @@
         <input type="checkbox" id="free">
     </div>
     <div class="param-item">
-        <button type="button" onclick="apply()">应用</button>
+        <button type="button" onclick="apply()" style="margin-left: 30px;">应用</button>
         <button type="button" onclick="reset()">重置</button>
+        <button type="button" onclick="editor()">插件</button>
     </div>
 </div>
     
@@ -97,6 +98,10 @@
     
     function reset() {
         window.location.reload()
+    }
+
+    function editor() {
+        window.open('editor.html', '编辑插件逻辑', `width=${1000 * devicePixelRatio}, height=${380 * devicePixelRatio}`)
     }
     
     load();
