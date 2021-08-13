@@ -3,7 +3,7 @@
 import 'pixi.js'
 import 'pixi-spine'
 import { ModelConfig } from './modelConfig'
-import { animations, premultiplied } from './specialized/definitions'
+import { premultiplied } from './specialized/definitions'
 import premultipliedImageLoader from './premultipliedImageLoader'
 
 type LoaderReturnType = Partial<Record<string, PIXI.LoaderResource>>
@@ -21,7 +21,6 @@ export default async (modelName: string): Promise<ModelConfig> => {
   const spine = await loadCharacter(app, modelName, '/sandbox/' + modelName + '.skel')
   app.stage.addChild(spine)
 
-  const dz = animations
   const fixed = { x: 0, y: 0, w: 0, h: 0, t: 0, d: 0 } // 可能需要自己在本子上画画
 
   const updateWithCurrentBound = (): void => {
@@ -34,8 +33,7 @@ export default async (modelName: string): Promise<ModelConfig> => {
     spine.y = fixed.y
   }
 
-  dz.forEach(currentAnimationName => {
-    const currentAnimation = spine.spineData.findAnimation(currentAnimationName)
+  spine.spineData.animations.forEach(currentAnimation => {
     spine.state.setAnimationWith(0, currentAnimation, true)
     let time = 0
     while (time < currentAnimation.duration) {
