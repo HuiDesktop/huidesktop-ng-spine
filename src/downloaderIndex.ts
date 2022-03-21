@@ -43,15 +43,15 @@ async function downloadFile (origin: string, ext: string, dest: string): Promise
       const blob = await response.arrayBuffer()
       await fetch(dest + ext, { method: 'POST', body: blob, headers: { 'Content-Type': 'application/octet-stream' } }) // 用Blob就不行，真是奇怪呢
       if (ext == '') {
-        waitDiv.innerText += `网站存在配置，跳过自动配置\n`
+        waitDiv.innerText += '网站存在配置，跳过自动配置\n'
         hasConfig = true
       } else {
-        waitDiv.innerText += `${ext}下载失败\n`
+        waitDiv.innerText += `${ext}下载成功\n`
       }
     }
   } catch (e) {
     if (ext == '') {
-      waitDiv.innerText += `网站不存在配置，将自动配置\n`
+      waitDiv.innerText += '网站不存在配置，将自动配置\n'
     } else {
       waitDiv.innerText += `${ext}下载失败\n`
     }
@@ -67,7 +67,7 @@ async function startDownload (): Promise<void> {
     downloadFile(origin, '.skel', dest),
     downloadFile(origin, '.png', dest),
     downloadFile(origin, '.atlas', dest),
-    downloadFile(configUrl(modelNameInput.value), '', `https://huidesktop/sandbox/model_config.json`)])
+    downloadFile(configUrl(modelNameInput.value), '', 'https://huidesktop/sandbox/model_config.json')])
   if (!hasConfig) {
     await fetch('https://huidesktop/sandbox/model_config.json', { method: 'POST', body: modelName })
   }
