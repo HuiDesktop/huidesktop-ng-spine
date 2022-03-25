@@ -48,3 +48,10 @@ export const initializeWindow = (hui: HuiDesktopIpcBridge, modelConfig: ModelCon
 export const getOpeningWindowSizeStr = (width: number, height: number): string => {
   return `width=${width * devicePixelRatio}, height=${height * devicePixelRatio}`
 }
+
+export const resetWindowPos = (hui: HuiDesktopIpcBridge, modelConfig: ModelConfig, userSettings: UserSettingBase<number>): void => {
+  const name = `cc.huix.blhx.${modelConfig.name}.pos`
+  hui.pos.x = 0
+  hui.pos.y = getGround(hui, modelConfig, userSettings.scale)
+  saveWindowPosToLocalStorage(hui, name)
+}

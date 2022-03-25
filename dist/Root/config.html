@@ -82,6 +82,7 @@
     <div class="param-item">
         <button type="button" onclick="apply()">应用</button>
         <button type="button" onclick="reset()">重置</button>
+        <button type="button" onclick="resetPos()">复位</button>
     </div>
 </div>
     
@@ -97,6 +98,11 @@
     
     function reset() {
         window.location.reload()
+    }
+
+    function resetPos() {
+        window.opener.resetPos()
+        window.opener.location.reload()
     }
     
     load();
