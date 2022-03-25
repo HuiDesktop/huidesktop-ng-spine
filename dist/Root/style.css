@@ -165,7 +165,7 @@ option::selection {
   background-color: rgba(0, 10, 32, 0.61);
   color: #fff;
   transition: all 0.5s;
-  width: 80px;
+  width: 60px;
   height: 40px;
   /* margin-left: 10px; */
   margin-right: 10px;

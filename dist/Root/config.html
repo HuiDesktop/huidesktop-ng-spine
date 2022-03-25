@@ -83,6 +83,7 @@
         <button type="button" onclick="apply()" style="margin-left: 30px;">应用</button>
         <button type="button" onclick="reset()">重置</button>
         <button type="button" onclick="editor()">插件</button>
+        <button type="button" onclick="resetPos()">复位</button>
     </div>
 </div>
     
@@ -102,6 +103,11 @@
 
     function editor() {
         window.open('editor.html', '编辑插件逻辑', `width=${1000 * devicePixelRatio}, height=${380 * devicePixelRatio}`)
+    }
+    
+    function resetPos() {
+        window.opener.resetPos()
+        window.opener.location.reload()
     }
     
     load();
