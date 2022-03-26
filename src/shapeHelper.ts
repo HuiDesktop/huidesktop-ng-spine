@@ -29,7 +29,7 @@ interface initializeWindowResult {
 
 export const initializeWindow = (hui: HuiDesktopIpcBridge, modelConfig: ModelConfig, userSettings: UserSettingBase<number>, mayFlip: boolean): initializeWindowResult => {
   // 调整坐标
-  const name = `cc.huix.blhx.${modelConfig.name}.pos`
+  const name = `cc.huix.mrfz.${modelConfig.name}.pos`
   const { x, y, success } = getWindowPosFromLocalStorage(name)
   const ground = getGround(hui, modelConfig, userSettings.scale)
   if (success) { hui.pos.x = x; hui.pos.y = y } else { hui.pos.x = 0; hui.pos.y = ground }
@@ -50,7 +50,7 @@ export const getOpeningWindowSizeStr = (width: number, height: number): string =
 }
 
 export const resetWindowPos = (hui: HuiDesktopIpcBridge, modelConfig: ModelConfig, userSettings: UserSettingBase<number>): void => {
-  const name = `cc.huix.blhx.${modelConfig.name}.pos`
+  const name = `cc.huix.mrfz.${modelConfig.name}.pos`
   hui.pos.x = 0
   hui.pos.y = getGround(hui, modelConfig, userSettings.scale)
   saveWindowPosToLocalStorage(hui, name)
