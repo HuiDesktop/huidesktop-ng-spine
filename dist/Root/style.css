@@ -167,7 +167,7 @@ option::selection {
   transition: all 0.5s;
   width: 60px;
   height: 40px;
-  /* margin-left: 10px; */
+  margin-left: 30px;
   margin-right: 10px;
   outline: none;
   border-radius: 5px;
