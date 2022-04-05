@@ -5,7 +5,7 @@ import HuiDesktopIpcBridge from './huiDesktopIpcBridge'
 import { ModelConfig } from './modelConfig'
 import { ManagedApplication, ManageSpine } from './pixiHelper'
 import ProcessManagementContainer from './processManagementContainer'
-import { getOpeningWindowSizeStr, initializeWindow } from './shapeHelper'
+import { getOpeningWindowSizeStr, initializeWindow, resetWindowPos } from './shapeHelper'
 import UserSettingManagerBase, { UserSettingBase } from './userSettingBase'
 
 const applyPureUserSettings = (hui: HuiDesktopIpcBridge, userSettings: UserSettingBase<number>): void => {
@@ -92,6 +92,7 @@ export default function<MouseKeyFunction extends number, ExtraState> (
 
     window.saveSettings = d => userSettingManager.saveUserSettingsToLocalStorage(userSettingManager.getUserSettingsFromHTMLDocument(d))
     window.showSettings = d => userSettingManager.showUserSettingsToHTMLDocument(userSettings, d)
+    window.resetPos = d => resetWindowPos(hui, modelConfig, userSettings)
     hui.setUserSettingsResponse(() => window.open('config.html', '设置', getOpeningWindowSizeStr(370, 760))).catch(e => console.error(e))
 
     const pluginJs = document.createElement('script')
